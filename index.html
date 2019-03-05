@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>wp-rest-api</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    article{
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <section id="result"></section>
+
+  <script>
+    /*
+      **** CRUD ****
+      GET root-url/wp-json/wp/v2/posts
+      POST root-url/wp-json/wp/v2/posts
+
+      wp-json/wp/v2/query
+        posts: 최근글 10개
+        posts?per_page=num: 가져올 글 수 지정
+        post?categories=3: 카테고리
+        post?categories=3&per_page=1: 카테고리3의 글 1개
+        
+    */
+
+    // 워드프레스 URL(REST API)
+    // var url = 'http://uxuiz.cafe24.com/wp/wp-json/wp/v2/posts'
+    var url = 'http://uxuiz.cafe24.com/wp/wp-json/wp/v2/posts?per_page=4'
+    var result = document.getElementById('result');
+
+    fetch(url)
+      .then(function(res){
+        // 접속 오류 확인
+        if(res.status === 404){
+          alert('Server Error!!');
+          return;
+        }
+        res.json()
+          .then(function(data){
+            console.log(data)
+            // var ul = document.createElement('ul')
+
+            for(var i in data){
+              const wp_data = {
+                title: data[i].title.rendered,
+                date: data[i].date,
+                content: data[i].content.rendered,
+              }
+              var html = 
+                `<article>
+                    <h4>${wp_data.title}</h4>
+                    <p>${wp_data.date}</p>
+                    <p>${wp_data.content}</p>
+                </article>`
+              result.innerHTML += html;
+            }
+          })
+      })
+
+  </script>
+</body>
+</html>
